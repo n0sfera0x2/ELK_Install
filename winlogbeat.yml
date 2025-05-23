@@ -1,0 +1,54 @@
+winlogbeat.event_logs:
+  - name: Application
+    id: application-logs
+    ignore_older: 168h
+  - name: Microsoft-Windows-Sysmon/Operational
+    ignore_older: 30m
+  - name: System
+    ignore_older: 30m
+  - name: Security
+    ignore_older: 30m
+  - name: ForwardedEvents
+    tags: [forwarded]
+  - name: Windows PowerShell
+    event_id: 400, 403, 600, 800
+    ignore_older: 30m
+  - name: Microsoft-Windows-PowerShell/Operational
+    event_id: 4103, 4104, 4105, 4106
+    ignore_older: 30m
+  - name: Microsoft-Windows-WMI-Activity/Operational
+    event_id: 5857,5858,5859,5860,5861
+
+# ====================== Elasticsearch template settings =======================
+
+setup.template.settings:
+  index.number_of_shards: 1
+  #index.codec: best_compression
+  #_source.enabled: false
+
+setup.kibana:
+
+# ================================== Outputs ===================================
+
+# Configure what output to use when sending the data collected by the beat.
+
+# ---------------------------- Elasticsearch Output ----------------------------
+output.elasticsearch:
+  hosts: ["https://elk:9200"]  # use HTTPS
+  preset: balanced
+  username: "elastic"
+  password: "pw"
+  ssl:
+    enabled: true
+    ca_trusted_fingerprint: "fingerprint"
+
+setup.kibana:
+  host: "http://elk:5601"
+
+logging.to_files: true
+logging.files:
+  path: "C:/ProgramData/winlogbeat/Logs"
+logging.level: info
+
+
+
